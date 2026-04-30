@@ -223,7 +223,7 @@ def update_employee(emp_id):
         choice = int(input("Enter choice :"))
         if choice == 1:
             new_phone = int(input("Enter new Phone Number : "))
-            query = "UPDATE Empliyee set phone = %s where EmployeeID=%s"
+            query = "UPDATE Employee set phone = %s where EmployeeID=%s"
             cursor.execute(query, (new_phone, emp_id))
         elif choice == 2:
             print("Department Id ----- Department_Name ")
@@ -246,9 +246,7 @@ def update_employee(emp_id):
             print("Employee updated successfully")
 
     except Exception as e:
-        print(
-            "Error : ",
-        )
+        print("Error", e)
     finally:
         cursor.close()
         conn.close()
@@ -287,7 +285,7 @@ def update_Salary(emp_id):
 
         query = """
         UPDATE SALARY 
-        set BasicSalary=%s, HRA=%s, Bonus=%s,Tax=%s,PF=%s
+        set BasicSalary=%s, HRA=%s,da=%, Bonus=%s,Tax=%s,PF=%s
         where EmployeeID=%s
         """
         cursor.execute(query, (basic, hra, da, bonus, tax, pf, emp_id))
@@ -298,6 +296,63 @@ def update_Salary(emp_id):
             print("Salary Updated successfully")
     except Exception as e:
         print("Error : ", e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# THIS FUNCTION CHANGES THE EMPLOYEE TYPE INTERN/PERMANENT
+def change_employee_type(emp_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        query = "Select EmpType from employee where EmployeeID=%s"
+        cursor.execute(query, (emp_id,))
+        result = cursor.fetchone()
+        if not result:
+            print("Employee not found")
+            return
+        current_type = result[0]
+        print("Current Position : ", current_type)
+        new_type = input("Enter new type (Permanent/Intern ): ")
+
+        if current_type.lower() == new_type.lower():
+            print("Already same type ")
+            return
+
+        # INTERN -> PERMANENT
+        if current_type.lower() == "intern" and new_type == "permanent":
+            # DELETE FROM INTERN TABLE
+            query = "DELETE  from intern where EmployeeID=%s"
+            cursor.execute(query, (emp_id,))
+
+            # TAKE INPUT FOR PERMANENT DETAILS
+            basic = float(input("Enter basic Salary : "))
+            bonus = float(input("Enter Bonus : "))
+            pf = float(input("Enter PF : "))
+
+            query = "Insert into permanent_employee(EmployeeID,BasicSalary,Bonus,PF) values(%s,%s,%s,%s)"
+            cursor.execute(query, (emp_id, basic, bonus, pf))
+        # PERMANENT -> INTERN
+        elif current_type.lower() == "permanent" and new_type.lower() == "intern":
+            # DELETE FROM PERMANENT TABLE
+            query = "DELETE from permanent_employee where employeeID=%s"
+            cursor.execute(query, (emp_id,))
+
+            duration = int(input("Enter Internship Duration : "))
+            query = "Insert into intern(EmployeeID,Intership_Duration) values(%s,%s)"
+            cursor.execute(query, (emp_id, duration))
+        else:
+            print("Invalid Type ")
+            return
+
+        # UPDATE EMPLOYEE TABLE
+        query = "Update employee set empType=%s where employeeID=%s"
+        cursor.execute(query, (new_type, emp_id))
+        conn.commit()
+        print("Employee Added successfully")
+    except Exception as e:
+        print("Error ", e)
     finally:
         cursor.close()
         conn.close()

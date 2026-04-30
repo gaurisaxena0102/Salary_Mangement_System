@@ -40,7 +40,7 @@ def get_all_Salaries():
             FROM Salary
             """
         cursor.execute(query)
-        netSal = cursor.fetchone()
+        netSal = cursor.fetchall()
         if not rows:
             print("No salary Record found")
         else:

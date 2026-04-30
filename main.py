@@ -36,7 +36,8 @@ def employee_menu():
     print("6 -> Update Employee Details ")
     print("7 -> Update Employee Salary")
     print("8 -> Delete Employee ")
-    print("9 -> Back ")
+    print("9 -> Change Employee Type ")
+    print("10 -> Back ")
     choice = int(input("Enter Choice : "))
     print("\n")
     match choice:
@@ -85,9 +86,9 @@ def employee_menu():
             emp.update_Salary(empID)
         case 8:
             id = int(input("Enter Employee ID to delete "))
-            employee = emp.get_employee_by_id(emp_id)
+            employee = emp.get_employee_by_id(id)
             if employee:
-                confirm = input(f"Delete {employee[1]} (ID: {employee[0]})? (y/n): ")
+                confirm = input(f"Delete {employee[1]} (ID: {employee[0]})? (yes/no): ")
 
                 if confirm.lower() == "yes":
                     emp.delete_employee(emp_id)
@@ -95,8 +96,21 @@ def employee_menu():
                     print("Deletion cancelled ")
             else:
                 print("Employee not found ")
-
         case 9:
+            emp_id = int(input("Enter Employee ID : "))
+            employee = emp.get_employee_by_id(emp_id)
+            if not employee:
+                return
+            confirm = input(
+                f"Change type of {employee[1]}(ID: {employee[0]})?(yes/no) : "
+            )
+
+            if confirm.lower() == "yes":
+                emp.change_employee_type(emp_id)
+            else:
+                print("Cancelled")
+
+        case 10:
             print("Going back...")
             return
         case _:
