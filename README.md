@@ -17,6 +17,3 @@ A simple Python project to manage employee and salary data using a database.
 
 This project is currently in progress and will be updated.
 
-## Author
-
-Gauri Saxena
