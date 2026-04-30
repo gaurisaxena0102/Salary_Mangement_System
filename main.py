@@ -1,6 +1,6 @@
-import department as dept
-import employee as emp
-import Salary as sal
+from Backend_Modules import department as dept
+from Backend_Modules import employee as emp
+from Backend_Modules import Salary as sal
 
 
 def main_menu():
@@ -9,8 +9,7 @@ def main_menu():
         print("1 -> Employee Operationns ")
         print("2 -> Department Operations ")
         print("3 -> Salary Operations ")
-        print("4 -> Back to main Menu ")
-        print("5 -> Exit ")
+        print("4 -> Exit ")
 
         choice = int(input("Enter your choice :"))
         match choice:
@@ -21,8 +20,6 @@ def main_menu():
             case 3:
                 salary_menu()
             case 4:
-                break
-            case 5:
                 print("Exiting system...")
                 break
             case _:
@@ -35,8 +32,11 @@ def employee_menu():
     print("2 -> View All Employees")
     print("3 -> Search Employee by ID ")
     print("4 -> Search Employee by Name ")
-    print("5 -> Count Employees")
-    print("6 -> Back ")
+    print("5 -> Count Employees in the Department ")
+    print("6 -> Update Employee Details ")
+    print("7 -> Update Employee Salary")
+    print("8 -> Delete Employee ")
+    print("9 -> Back ")
     choice = int(input("Enter Choice : "))
     print("\n")
     match choice:
@@ -50,6 +50,17 @@ def employee_menu():
 
             emp.Add_employee(emp_id, name, email, phone, emp_type, dept_id)
 
+            if emp_type.lower() == "permanent":
+                basic = float(input("Enter Basic Salary : "))
+                bonus = float(input("Enter Bonus : "))
+                pf = float(input("Enter PF : "))
+
+                emp.add_permanent_employee(emp_id, basic, bonus, pf)
+            elif emp_type.lower() == "intern":
+                duration = int(input("Enter Internship Duration(months): "))
+                emp.add_intern_employee(emp_id, duration)
+            else:
+                print("Invalid Employee Type ")
         case 2:
             emp.get_Employees()
         case 3:
@@ -68,6 +79,24 @@ def employee_menu():
             dept_ID = int(input("Enter Department ID : "))
             emp.count_employees(dept_ID)
         case 6:
+            emp.confirm_and_Update_employee()
+        case 7:
+            empID = int(input("Enter Employee ID : "))
+            emp.update_Salary(empID)
+        case 8:
+            id = int(input("Enter Employee ID to delete "))
+            employee = emp.get_employee_by_id(emp_id)
+            if employee:
+                confirm = input(f"Delete {employee[1]} (ID: {employee[0]})? (y/n): ")
+
+                if confirm.lower() == "yes":
+                    emp.delete_employee(emp_id)
+                else:
+                    print("Deletion cancelled ")
+            else:
+                print("Employee not found ")
+
+        case 9:
             print("Going back...")
             return
         case _:
