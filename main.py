@@ -1,6 +1,6 @@
-from Backend_Modules import department as dept
-from Backend_Modules import employee as emp
-from Backend_Modules import Salary as sal
+import department as dept
+import employee as emp
+import Salary as sal
 
 
 def main_menu():
