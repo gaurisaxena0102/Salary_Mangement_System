@@ -28,21 +28,23 @@ def add_salary(salary_ID, emp_id, basic, hra, da, bonus, tax, pf):
 
 def get_all_Salaries():
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
 
-    query = "Select* from Salary"
+    query = """
+        SELECT *,
+        (BasicSalary + HRA + DA + Bonus - Tax - PF) AS Net_Salary
+        FROM Salary
+    """
+
     try:
         cursor.execute(query)
         rows = cursor.fetchall()
-        query = """
-            SELECT *,
-            (BasicSalary + HRA + DA + Bonus - Tax - PF) AS Net_Salary
-            FROM Salary
-            """
-        cursor.execute(query)
-        netSal = cursor.fetchall()
+
         if not rows:
-            print("No salary Record found")
+            print("No salary record found")
         else:
             for row in rows:
                 print("Salary ID:", row[0])
@@ -53,55 +55,22 @@ def get_all_Salaries():
                 print("Bonus:", float(row[5]))
                 print("Tax:", float(row[6]))
                 print("PF:", float(row[7]))
-                print("Net Salary : ", float(netSal[0]))
+                print("Net Salary:", float(row[8]))  # ✅ correct index
                 print("------------------------")
+
     except Exception as e:
-        print("Error : ", e)
+        print("Error:", e)
+
     finally:
-        print("\n\n")
         cursor.close()
         conn.close()
 
 
-# def get_salary_by_employee(emp_id):
-#     conn = get_connection()
-#     cursor = conn.cursor()
-
-#     query = "Select * from salary where EmployeeID =%s"
-#     try:
-#         cursor.execute(query, (emp_id,))
-#         row = cursor.fetchone()
-#         query2 = """
-#             SELECT *,
-#             (BasicSalary + HRA + DA + Bonus - Tax - PF) AS Net_Salary
-#             FROM Salary
-#             """
-#         cursor.execute(query2)
-#         netSal = cursor.fetchone()
-
-#         if row:
-#             print("SalaryID : ", row[0])
-#             print("EmployeeID : ", row[1])
-#             print("Basic Salary : ", float(row[2]))
-#             print("HRA : ", float(row[3]))
-#             print("DA : ", float(row[4]))
-#             print("Bonus : ", float(row[5]))
-#             print("Tax : ", float(row[6]))
-#             print("PF:", float(row[7]))
-#             print("Net Salary : ", float(netSal[0]))
-#             print("------------------------")
-
-
-#         else:
-#             print("Salary record not found ")
-#     except Exception as e:
-#         print("Error : ", e)
-#     finally:
-#         print("\n\n")
-#         cursor.close()
-#         conn.close()
 def get_salary_by_employee(emp_id):
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
 
     query = """
@@ -140,35 +109,58 @@ def get_salary_by_employee(emp_id):
         conn.close()
 
 
-def get_salary_report():
+# THIS FUNCTION GENERATES THE PAYSLIP OF A EMPLOYEE
+def generate_payslip(emp_id):
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
 
     query = """
-    Select e.employeeID, e.Name, s.BasicSalary, s.HRA,s.Bonus, s.Tax, s.PF,
-    (s.BasicSalary + s.HRA + s.DA + s.Bonus - s.Tax - s.PF) AS Net_Salary
-    From Employee e
-    Join Salary s ON e.EmployeeID = s.EmployeeID
+    SELECT e.EmployeeID, e.Name,
+           s.BasicSalary, s.HRA, s.DA, s.Bonus, s.Tax, s.PF,
+           (s.BasicSalary + s.HRA + s.DA + s.Bonus - s.Tax - s.PF) AS Net_Salary
+    FROM Employee e
+    JOIN Salary s ON e.EmployeeID = s.EmployeeID
+    WHERE e.EmployeeID = %s
     """
-    try:
-        cursor.execute(query)
-        rows = cursor.fetchall()
 
-        for row in rows:
-            print("Employee ID : ", row[0])
-            print("Name : ", row[1])
-            print("Net Salary : ", row[2])
-            print("------------------------")
+    try:
+        cursor.execute(query, (emp_id,))
+        row = cursor.fetchone()
+
+        if row:
+            print("\n========= PAYSLIP =========")
+            print("Employee ID :", row[0])
+            print("Name        :", row[1])
+
+            print("\n--- Earnings ---")
+            print("Basic Salary:", float(row[2]))
+            print("HRA         :", float(row[3]))
+            print("DA          :", float(row[4]))
+            print("Bonus       :", float(row[5]))
+
+            print("\n--- Deductions ---")
+            print("Tax         :", float(row[6]))
+            print("PF          :", float(row[7]))
+
+            print("\nNet Salary  :", float(row[8]))
+            print("===========================\n")
+        else:
+            print("Salary record not found")
     except Exception as e:
         print("Error : ", e)
     finally:
-        print("\n\n")
         cursor.close()
         conn.close()
 
 
 def get_salary_in_range(min_salary, max_Salary):
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
     try:
         query = """ 
@@ -198,6 +190,9 @@ def get_salary_in_range(min_salary, max_Salary):
 
 def average_salary():
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
     query = """
     Select Avg(BasicSalary + HRA + DA + Bonus - Tax - PF)
@@ -217,6 +212,9 @@ def average_salary():
 
 def highest_paid_Employee():
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
     query = """
     Select e.EmployeeID, e.Name,
@@ -238,5 +236,40 @@ def highest_paid_Employee():
         print("Error : ", e)
     finally:
         print("\n\n")
+        cursor.close()
+        conn.close()
+
+
+# THIS FUNCTION WILL UPDATE THE SALARY FOR A CURRENT EMPLOYEE
+def update_Salary(emp_id):
+    conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
+    cursor = conn.cursor()
+    try:
+        print("\nEnter new Salary Details : ")
+
+        basic = float(input("Basic : "))
+        hra = float(input("HRA : "))
+        da = float(input("DA : "))
+        bonus = float(input("Bonus : "))
+        tax = float(input("Tax : "))
+        pf = float(input("PF : "))
+
+        query = """
+        UPDATE SALARY 
+        set BasicSalary=%s, HRA=%s,da=%s, Bonus=%s,Tax=%s,PF=%s
+        where EmployeeID=%s
+        """
+        cursor.execute(query, (basic, hra, da, bonus, tax, pf, emp_id))
+        conn.commit()
+        if cursor.rowcount == 0:
+            print("Salary record not found ")
+        else:
+            print("Salary Updated successfully")
+    except Exception as e:
+        print("Error : ", e)
+    finally:
         cursor.close()
         conn.close()

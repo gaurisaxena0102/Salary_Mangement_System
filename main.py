@@ -34,10 +34,9 @@ def employee_menu():
     print("4 -> Search Employee by Name ")
     print("5 -> Count Employees in the Department ")
     print("6 -> Update Employee Details ")
-    print("7 -> Update Employee Salary")
-    print("8 -> Delete Employee ")
-    print("9 -> Change Employee Type ")
-    print("10 -> Back ")
+    print("7 -> Delete Employee ")
+    print("8 -> Change Employee Type ")
+    print("9 -> Back ")
     choice = int(input("Enter Choice : "))
     print("\n")
     match choice:
@@ -82,21 +81,18 @@ def employee_menu():
         case 6:
             emp.confirm_and_Update_employee()
         case 7:
-            empID = int(input("Enter Employee ID : "))
-            emp.update_Salary(empID)
-        case 8:
             id = int(input("Enter Employee ID to delete "))
             employee = emp.get_employee_by_id(id)
             if employee:
                 confirm = input(f"Delete {employee[1]} (ID: {employee[0]})? (yes/no): ")
 
                 if confirm.lower() == "yes":
-                    emp.delete_employee(emp_id)
+                    emp.delete_employee(id)
                 else:
                     print("Deletion cancelled ")
             else:
                 print("Employee not found ")
-        case 9:
+        case 8:
             emp_id = int(input("Enter Employee ID : "))
             employee = emp.get_employee_by_id(emp_id)
             if not employee:
@@ -110,7 +106,7 @@ def employee_menu():
             else:
                 print("Cancelled")
 
-        case 10:
+        case 9:
             print("Going back...")
             return
         case _:
@@ -123,8 +119,10 @@ def department_menu():
     print("2 -> View  All Departments ")
     print("3 -> Search Department by Department ID ")
     print("4 -> Show total Number of Departments ")
-    print("5 -> Show Department Employee : ")
-    print("6 -> Back ")
+    print("5 -> View Employee in Department : ")
+    print("6 -> Employee Count per Department")
+    print("7 -> Department Salary Report")
+    print("8 -> Back ")
     choice = int(input("Enter Choice : "))
     print("\n")
 
@@ -152,6 +150,10 @@ def department_menu():
             dept_ID = int(input("Enter Department ID : "))
             dept.show_department_employees(dept_ID)
         case 6:
+            dept.employee_count_per_department()
+        case 7:
+            dept.department_salary_report()
+        case 8:
             print("Going back...")
             return
         case _:
@@ -163,9 +165,10 @@ def salary_menu():
     print("1 -> View Salaries ")
     print("2 -> Salary Report")
     print("3 -> Highest Paid Employee")
-    print("4 -> Individual Salary Report")
+    print("4 -> Generate Payslip ")
     print("5 -> Add Salary of New Employee ")
-    print("6 -> Back")
+    print("6 -> Update Employee Salary")
+    print("7 -> Back")
 
     choice = int(input("Enter  your Choice : "))
 
@@ -179,7 +182,7 @@ def salary_menu():
         case 4:
             print("\n\n")
             empID = int(input("Enter Employee ID : "))
-            sal.get_salary_by_employee(empID)
+            sal.generate_payslip(empID)
         case 5:
             salID = int(input("Enter  New Salary ID : "))
             EmpID = int(input("Enter Employee ID : "))
@@ -191,6 +194,9 @@ def salary_menu():
             PF = int(input("Enter PF : "))
             sal.add_salary(salID, EmpID, Basic, HRA, DA, Bonus, Tax, PF)
         case 6:
+            empID = int(input("Enter Employee ID : "))
+            sal.update_Salary(empID)
+        case 7:
             print("Going back...")
             return
         case _:

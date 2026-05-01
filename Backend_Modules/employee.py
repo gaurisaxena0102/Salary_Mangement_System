@@ -34,7 +34,7 @@ def add_permanent_employee(emp_id, basic, bonus, pf):
         return
     cursor = conn.cursor()
     query = """
-    INSERT INTO permanent_employee(employeeId,BasixSalary,bonus,PF)
+    INSERT INTO permanent_employee(employeeId,BasicSalary,bonus,PF)
     VALUES(%s,%s,%s,%s)
     """
     try:
@@ -138,7 +138,11 @@ def get_employee_by_id(emp_id):
 # THIS FUNCTION GIVES THE DATA OF THE EMPLOYEE WHOSE NAME WILL BE ENTERED
 def search_employee_by_name(name):
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return None
     cursor = conn.cursor()
+
     query = """
     select EmployeeID, Name, Email,Phone,EmpType,DepartmentID
     FROM Employee
@@ -172,6 +176,9 @@ def search_employee_by_name(name):
 # THIS GIVES THE TOTAL NUMBER OF EMPLOYEES IN A SPECIFIC DEPARTMENT
 def count_employees(dept_ID):
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
     query = "Select count(*) from employee Where departmentID=%s "
     cursor.execute(query, (dept_ID,))
@@ -269,41 +276,12 @@ def confirm_and_Update_employee():
     update_employee(emp_id)
 
 
-# THIS FUNCTION WILL UPDATE THE SALARY FOR A CURRENT EMPLOYEE
-def update_Salary(emp_id):
-    conn = get_connection()
-    cursor = conn.cursor()
-    try:
-        print("\nEnter new Salary Details : ")
-
-        basic = float(input("Basic : "))
-        hra = float(input("HRA : "))
-        da = float(input("DA : "))
-        bonus = float(input("Bonus : "))
-        tax = float(input("Tax : "))
-        pf = float(input("PF : "))
-
-        query = """
-        UPDATE SALARY 
-        set BasicSalary=%s, HRA=%s,da=%, Bonus=%s,Tax=%s,PF=%s
-        where EmployeeID=%s
-        """
-        cursor.execute(query, (basic, hra, da, bonus, tax, pf, emp_id))
-        conn.commit()
-        if cursor.rowcount == 0:
-            print("Salary record not found ")
-        else:
-            print("Salary Updated successfully")
-    except Exception as e:
-        print("Error : ", e)
-    finally:
-        cursor.close()
-        conn.close()
-
-
 # THIS FUNCTION CHANGES THE EMPLOYEE TYPE INTERN/PERMANENT
 def change_employee_type(emp_id):
     conn = get_connection()
+    if conn is None:
+        print("Database Connection Failed")
+        return
     cursor = conn.cursor()
     try:
         query = "Select EmpType from employee where EmployeeID=%s"
@@ -321,7 +299,7 @@ def change_employee_type(emp_id):
             return
 
         # INTERN -> PERMANENT
-        if current_type.lower() == "intern" and new_type == "permanent":
+        if current_type.lower() == "intern" and new_type.lower() == "permanent":
             # DELETE FROM INTERN TABLE
             query = "DELETE  from intern where EmployeeID=%s"
             cursor.execute(query, (emp_id,))
