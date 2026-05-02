@@ -251,34 +251,17 @@ def show_dashboard():
 
     st.markdown("---")
 
-    # Quick charts
-    col_left, col_right = st.columns(2)
-
-    with col_left:
-        st.subheader("📊 Employees per Department")
-        rows = run_query(
-            """SELECT d.DepartmentName, COUNT(e.EmployeeID) AS Total
-               FROM DEPARTMENT d
-               LEFT JOIN EMPLOYEE e ON d.DepartmentID = e.DepartmentID
-               GROUP BY d.DepartmentName"""
-        )
-        if rows:
-            df = pd.DataFrame(rows, columns=["Department", "Employees"])
-            st.bar_chart(df.set_index("Department"))
-
-    with col_right:
-        st.subheader("💵 Salary Bill per Department")
-        rows = run_query(
-            """SELECT d.DepartmentName,
-                      COALESCE(SUM(s.BasicSalary + s.HRA + s.DA + s.Bonus - s.Tax - s.PF), 0) AS TotalSalary
-               FROM DEPARTMENT d
-               LEFT JOIN EMPLOYEE e ON d.DepartmentID = e.DepartmentID
-               LEFT JOIN SALARY   s ON e.EmployeeID   = s.EmployeeID
-               GROUP BY d.DepartmentName"""
-        )
-        if rows:
-            df = pd.DataFrame(rows, columns=["Department", "Total Salary (₹)"])
-            st.bar_chart(df.set_index("Department"))
+    # Quick chart
+    st.subheader("📊 Employees per Department")
+    rows = run_query(
+        """SELECT d.DepartmentName, COUNT(e.EmployeeID) AS Total
+           FROM DEPARTMENT d
+           LEFT JOIN EMPLOYEE e ON d.DepartmentID = e.DepartmentID
+           GROUP BY d.DepartmentName"""
+    )
+    if rows:
+        df = pd.DataFrame(rows, columns=["Department", "Employees"])
+        st.bar_chart(df.set_index("Department"))
 
     # Recent employees
     st.subheader("🕐 Recent Employees")
@@ -806,7 +789,6 @@ def show_departments():
             )
         if rows:
             df = pd.DataFrame(rows, columns=["Department", "Total Employees"])
-            st.bar_chart(df.set_index("Department"))
             st.dataframe(df, use_container_width=True, hide_index=True)
         else:
             st.warning("⚠️ No data available.")
@@ -920,11 +902,7 @@ def show_salary():
                 "Emp ID", "Name", "Department",
                 "Basic (₹)", "HRA (₹)", "DA (₹)", "Bonus (₹)", "Tax (₹)", "PF (₹)", "Net Salary (₹)"
             ])
-            st.subheader("📊 Net Salary Comparison")
-            chart_df = df[["Name", "Net Salary (₹)"]].set_index("Name")
-            st.bar_chart(chart_df)
-
-            st.subheader("📋 Detailed Salary Table")
+            st.subheader("� Detailed Salary Table")
             st.dataframe(df, use_container_width=True, hide_index=True)
         else:
             st.warning("⚠️ No salary data available.")
