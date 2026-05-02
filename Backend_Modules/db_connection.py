@@ -1,24 +1,21 @@
 import mysql.connector
+import config
 
 
 def get_connection():
     try:
-
         conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="gauri01",
-            database="Salary_Management",
+            host=config.DB_HOST,
+            user=config.DB_USER,
+            password=config.DB_PASSWORD,
+            database=config.DB_NAME,
         )
-        if conn.is_connected():
 
-            # print("Connection Established ")
+        if conn.is_connected():
             return conn
         else:
-            print("connection Failed")
+            print("Connection Failed")
+
     except Exception as e:
-        print("Error ", e)
+        print("Error:", e)
         return None
-
-
-# get_connection()
