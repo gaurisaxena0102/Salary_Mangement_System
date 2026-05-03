@@ -317,7 +317,7 @@ def change_employee_type(emp_id):
             query = "DELETE from permanent_employee where employeeID=%s"
             cursor.execute(query, (emp_id,))
 
-            duration = int(input("Enter Internship Duration : "))
+            duration = int(input("Ent9er Internship Duration : "))
             query = "Insert into intern(EmployeeID,Intership_Duration) values(%s,%s)"
             cursor.execute(query, (emp_id, duration))
         else:
