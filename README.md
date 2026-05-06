@@ -13,20 +13,23 @@ It allows users to manage employees, departments, and salary details through a t
 * Python
 * MySQL
 * MySQL Connector (Python library)
+* Streamlit(for frontend)
 
 ---
 
 
 ## ▶️ How to Run
 
-1. Install Python and MySQL
-2. Create database and run `schema.sql`
-3. Install required packages:
-   pip install mysql-connector-python
-4. Run the program:
-   python main.py
-
----
+1-Install Python
+2- Install required libraries:
+   pip install -r requirements.txt
+3- Setup MySQL database
+4- Run the SQL files:
+   Schema.sql
+5- Update database credentials in:
+      db_connection.py
+6- Run the application:
+      streamlit run Backend_Modules/app.py
 
 ## 📊 Database Tables
 
@@ -37,6 +40,16 @@ It allows users to manage employees, departments, and salary details through a t
 * Salary
 
 ---
+⚠️ Limitations
+-> Basic user interface
+-> No authentication system
+-> Works on local database
+
+🚀 Future Enhancements
+-> Add login system
+-> Improve UI design
+-> Add graphical reports
+-> Deploy application online
 
 
 
