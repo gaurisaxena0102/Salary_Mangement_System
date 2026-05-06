@@ -43,16 +43,16 @@ db_connection.py
 * Salary
 
 ---
-⚠️ Limitations
--> Basic user interface
--> No authentication system
--> Works on local database
+## ⚠️ Limitations
+- Basic user interface  
+- No authentication system  
+- Works on local database  
 
-🚀 Future Enhancements
--> Add login system
--> Improve UI design
--> Add graphical reports
--> Deploy application online
+## 🚀 Future Enhancements
+- Add login system  
+- Improve UI design  
+- Add graphical reports  
+- Deploy application online  
 
 
 
