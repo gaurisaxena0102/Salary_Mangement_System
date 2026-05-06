@@ -18,18 +18,21 @@ It allows users to manage employees, departments, and salary details through a t
 ---
 
 
-## ▶️ How to Run
+## ▶️ How to Run the Project
 
-1-Install Python
-2- Install required libraries:
-   pip install -r requirements.txt
-3- Setup MySQL database
-4- Run the SQL files:
-   Schema.sql
-5- Update database credentials in:
-      db_connection.py
-6- Run the application:
-      streamlit run Backend_Modules/app.py
+1. Install Python
+
+2. Install required libraries
+  
+3. Setup MySQL database
+
+4. Run the SQL file:
+- Schema.sql
+
+5. Update database credentials in:
+db_connection.py
+
+6. Run the application: 
 
 ## 📊 Database Tables
 
